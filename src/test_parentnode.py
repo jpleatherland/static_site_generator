@@ -1,12 +1,27 @@
-from htmlnode import HTMLNode
+import unittest
 
-class ParentNode(HTMLNode):
-    def __init__(self, tag=None, children, props=None):
-        super().__init__(tag=tag, children=children, props=props)
+from parentnode import ParentNode
+from leafnode import LeafNode
 
-    def to_html(self):
-        if(not self.tag):
-            raise ValueError('No tag provided')
-        if(not self.children):
-            raise ValueError('No children provided')
-        pass
+class ParentTestNode(unittest.TestCase):
+    def test_to_html(self):
+        node = ParentNode(tag="p", children=[LeafNode("b", "Bold Text")])
+        self.assertEqual(node.to_html(), "<p><b>Bold Text</b></p>")
+
+    def test_nested_parents(self):
+        node = ParentNode(tag="p", 
+                          children=[
+                              ParentNode(
+                                  tag="h1", 
+                                  props={"test":"testval", "test2":"test2val"},
+                                  children=[
+                                      LeafNode("p", "Paragraph", {"testProp":"testVal"})
+                                  ]
+                              )
+                          ]
+                )
+        self.assertEqual(node.to_html(), '<p><h1 test="testval" test2="test2val"><p testProp="testVal">Paragraph</p></h1></p>')
+
+
+if __name__ == "__main__":
+    unittest.main()
