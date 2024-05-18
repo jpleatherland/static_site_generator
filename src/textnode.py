@@ -11,3 +11,10 @@ class TextNode:
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
+
+    def split_nodes_delimiters(old_nodes, delimiter, text_type):
+        split_nodes = old_nodes.split(delimiter)
+        match text_type:
+            case "text_type_bold":
+
+        pass
