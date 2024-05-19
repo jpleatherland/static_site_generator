@@ -12,9 +12,21 @@ class TextNode:
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
 
-    def split_nodes_delimiters(old_nodes, delimiter, text_type):
-        split_nodes = old_nodes.split(delimiter)
-        match text_type:
-            case "text_type_bold":
 
-        pass
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    result_nodes = []
+    for node in old_nodes:
+        current_text_string = '' 
+        for char in node.text:
+            print(current_text_string)
+            if (char == delimiter):
+                if(current_text_string.startswith(delimiter)):
+                    result_nodes.append(TextNode(current_text_string[1:], text_type))
+                    current_text_string = ''
+                    continue
+                else:
+                    result_nodes.append(TextNode(current_text_string, 'text_type_text'))
+                    current_text_string = char
+            else:
+                ''.join([current_text_string,char])
+    return result_nodes
