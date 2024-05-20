@@ -18,7 +18,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for node in old_nodes:
         current_text_string = '' 
         for char in node.text:
-            print(current_text_string)
             if (char == delimiter):
                 if(current_text_string.startswith(delimiter)):
                     result_nodes.append(TextNode(current_text_string[1:], text_type))
@@ -28,5 +27,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     result_nodes.append(TextNode(current_text_string, 'text_type_text'))
                     current_text_string = char
             else:
-                ''.join([current_text_string,char])
+               current_text_string = ''.join([current_text_string,char])
+        result_nodes.append(TextNode(current_text_string, 'text_type_text'))
     return result_nodes

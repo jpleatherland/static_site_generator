@@ -23,5 +23,10 @@ class TestTextNode(unittest.TestCase):
         new_nodes = split_nodes_delimiter([node], "`", "text_type_code")
         self.assertEqual(new_nodes, [TextNode("This is text with a ", "text_type_text"),TextNode("code block", "text_type_code"),TextNode(" word", "text_type_text"),])
 
+    def test_split_multiple_nodes(self):
+        nodes = [TextNode("This is text with a `code block` word", "text_type_text"), TextNode("This is text with an *italic* word", "text_type_italic")]
+        new_nodes = split_nodes_delimiter(nodes, "`", "text_type_code")
+        self.assertEqual(new_nodes, [TextNode("This is text with a ", "text_type_text"),TextNode("code block", "text_type_code"),TextNode(" word", "text_type_text"),TextNode("This is text with an ", "text_type_text"),TextNode("italic", "text_type_italic"),TextNode(" word", "text_type_text")])
+
 if __name__ == "__main__":
     unittest.main()
