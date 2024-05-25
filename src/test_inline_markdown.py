@@ -97,6 +97,41 @@ class TestInlineMarkdown(unittest.TestCase):
         result = split_nodes_image([node])
         self.assertListEqual(expected, result)
     
+    def test_split_nodes_image_multiple(self):
+        node = TextNode(
+            "This is text with multiple images: ![image1](https://example.com/image1.png) and ![image2](https://example.com/image2.png)",
+            text_type_text,
+        )
+        expected = [
+            TextNode("This is text with multiple images: ", text_type_text),
+            TextNode("image1", text_type_image, "https://example.com/image1.png"),
+            TextNode(" and ", text_type_text),
+            TextNode("image2", text_type_image, "https://example.com/image2.png")
+        ]
+        result = split_nodes_image([node])
+        self.assertListEqual(expected, result)
+
+    def test_split_nodes_image_no_text(self):
+        node = TextNode(
+            "![](https://example.com/image.png)",
+            text_type_text,
+        )
+        expected = [
+            TextNode("", text_type_image, "https://example.com/image.png")
+        ]
+        result = split_nodes_image([node])
+        self.assertListEqual(expected, result)
+
+    def test_split_nodes_image_no_image(self):
+        node = TextNode(
+            "This is text without an image",
+            text_type_text,
+        )
+        expected = [
+            TextNode("This is text without an image", text_type_text)
+        ]
+        result = split_nodes_image([node])
+        self.assertListEqual(expected, result)
 
 if __name__ == "__main__":
     unittest.main()

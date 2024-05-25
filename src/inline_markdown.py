@@ -3,7 +3,9 @@ from textnode import (
     text_type_text,
     text_type_bold,
     text_type_italic,
-    text_type_code
+    text_type_code,
+    text_type_image,
+    text_type_link
 )
 
 from extract_methods import (
@@ -37,13 +39,17 @@ def split_nodes_image(old_nodes):
         if len(node.text) == 0:
             continue
         images = extract_markdown_images(node.text)
-        if len(images) == 0 and len(node.text > 0):
+        if len(images) == 0 and len(node.text) > 0:
             new_nodes.append(node)
             continue
-        split_nodes = []
-        for image in images:
-            split_nodes.append(node.text.split(f"![{image[0]}]({image[1]})", 1))
-            print("break")
-
-
-
+        remaining_text = node.text
+        for i in range(0,len(images)):
+            parts = remaining_text.split(f"![{images[i][0]}]({images[i][1]})")
+            if len(parts[0]) > 0:
+                new_nodes.append(TextNode(parts[0], text_type_text))
+            new_nodes.append(TextNode(images[i][0], text_type_image, images[i][1]))
+            if len(parts) > 1:
+                remaining_text = parts[1]
+        if len(remaining_text) > 0:
+            new_nodes.append(TextNode(remaining_text, text_type_text))
+    return new_nodes
