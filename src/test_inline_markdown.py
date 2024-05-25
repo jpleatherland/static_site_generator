@@ -1,7 +1,8 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter,
-    split_nodes_image
+    split_nodes_image,
+    split_nodes_link
 )
 
 from textnode import (
@@ -132,6 +133,58 @@ class TestInlineMarkdown(unittest.TestCase):
         ]
         result = split_nodes_image([node])
         self.assertListEqual(expected, result)
+
+    
+    def test_split_nodes_link(self):
+        node = TextNode(
+            "This is text with a [link](https://example.com) and another [second link](https://example2.com)",
+            text_type_text,
+        )
+        expected = [
+            TextNode("This is text with a ", text_type_text),
+            TextNode("link", text_type_link, "https://example.com"),
+            TextNode(" and another ", text_type_text),
+            TextNode("second link", text_type_link, "https://example2.com")
+        ]
+        result = split_nodes_link([node])
+        self.assertListEqual(expected, result)
+
+    def test_split_nodes_link_multiple(self):
+        node = TextNode(
+            "This is text with multiple links: [link1](https://example.com) and [link2](https://example2.com)",
+            text_type_text,
+        )
+        expected = [
+            TextNode("This is text with multiple links: ", text_type_text),
+            TextNode("link1", text_type_link, "https://example.com"),
+            TextNode(" and ", text_type_text),
+            TextNode("link2", text_type_link, "https://example2.com")
+        ]
+        result = split_nodes_link([node])
+        self.assertListEqual(expected, result)
+
+    def test_split_nodes_link_no_text(self):
+        node = TextNode(
+            "[](https://example.com)",
+            text_type_text,
+        )
+        expected = [
+            TextNode("", text_type_link, "https://example.com")
+        ]
+        result = split_nodes_link([node])
+        self.assertListEqual(expected, result)
+
+    def test_split_nodes_link_no_link(self):
+        node = TextNode(
+            "This is text without a link",
+            text_type_text,
+        )
+        expected = [
+            TextNode("This is text without a link", text_type_text)
+        ]
+        result = split_nodes_link([node])
+        self.assertListEqual(expected, result)
+
 
 if __name__ == "__main__":
     unittest.main()
