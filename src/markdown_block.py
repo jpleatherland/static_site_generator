@@ -1,3 +1,7 @@
+from parentnode import ParentNode
+from leafnode import LeafNode
+from inline_markdown import text_to_textnodes
+
 block_types = {
     "block_type_paragraph" : "paragraph",
     "block_type_h1" : "h1",
@@ -45,3 +49,33 @@ def block_to_block_type(block):
                 return block_types['block_type_paragraph']
         return block_types['block_type_ol']
     return block_types['block_type_paragraph']
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    children = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        block_content = block
+        if block_type == block_types['block_type_h1']:
+            block_content = block_content[2:]
+        elif block_type == block_types['block_type_h2']:
+            block_content = block_content[3:]
+        elif block_type == block_types['block_type_h3']:
+            block_content = block_content[4:]
+        elif block_type == block_types['block_type_h4']:
+            block_content = block_content[5:]
+        elif block_type == block_types['block_type_h5']:
+            block_content = block_content[6:]
+        elif block_type == block_types['block_type_h6']:
+            block_content = block_content[7:]
+        elif block_type == block_types['block_type_code']:
+            block_content = block_content[3:-3]
+        elif block_type == block_types['block_type_quote']:
+            block_content = block_content[2:]
+        elif block_type == block_types['block_type_ul']:
+            block_content = block_content[2:]
+        elif block_type == block_types['block_type_ol']:
+            block_content = block_content[3:]
+        children.append(LeafNode(block_type, block_content))
+    root = ParentNode("div", children = children)
+    return root

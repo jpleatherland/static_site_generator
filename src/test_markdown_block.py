@@ -3,10 +3,16 @@ import unittest
 from markdown_block import (
     markdown_to_blocks,
     block_types,
-    block_to_block_type
+    block_to_block_type,
+    markdown_to_html_node
 )
 
+from parentnode import ParentNode
+from leafnode import LeafNode
+
 class TestExtractMethods(unittest.TestCase):
+
+    # Test markdown_to_blocks
     def test_markdown_to_blocks(self):
         markdown = "This is the first block.\n\nThis is the second block.\n\nThis is the third block."
         expected = ["This is the first block.", "This is the second block.", "This is the third block."]
@@ -37,6 +43,7 @@ class TestExtractMethods(unittest.TestCase):
         result = markdown_to_blocks(markdown)
         self.assertListEqual(expected, result)
 
+    # Test block_to_block_type
     def test_block_to_block_type_paragraph(self):
         block = "This is a paragraph."
         expected = block_types["block_type_paragraph"]
@@ -115,6 +122,58 @@ class TestExtractMethods(unittest.TestCase):
         result = block_to_block_type(block)
         self.assertEqual(expected, result)
 
+    # Test markdown_to_html_node
+    def test_markdown_to_html_node_with_paragraph(self):
+        markdown = "This is a paragraph."
+        expected = ParentNode(tag="div", children=[LeafNode("paragraph", "This is a paragraph.")])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
+
+    def test_markdown_to_html_node_with_headings(self):
+        markdown = "# Heading 1\n\n## Heading 2\n\n### Heading 3"
+        expected = ParentNode("div", children=[
+            LeafNode("h1", "Heading 1"),
+            LeafNode("h2", "Heading 2"),
+            LeafNode("h3", "Heading 3")
+        ])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
+
+    def test_markdown_to_html_node_with_code_block(self):
+        markdown = "```python\nprint('Hello, World!')\n```"
+        expected = ParentNode("div", children=[
+            LeafNode("code", "print('Hello, World!')")
+        ])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
+
+    def test_markdown_to_html_node_with_quote(self):
+        markdown = "> This is a quote."
+        expected = ParentNode("div", children=[
+            LeafNode("quote", "This is a quote.")
+        ])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
+
+    def test_markdown_to_html_node_with_unordered_list(self):
+        markdown = "- Item 1\n- Item 2\n- Item 3"
+        expected = ParentNode("div", children=[
+            LeafNode("unordered_list", "Item 1"),
+            LeafNode("unordered_list", "Item 2"),
+            LeafNode("unordered_list", "Item 3")
+        ])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
+
+    def test_markdown_to_html_node_with_ordered_list(self):
+        markdown = "1. Item 1\n2. Item 2\n3. Item 3"
+        expected = ParentNode("div", children=[
+            LeafNode("ordered_list", "Item 1"),
+            LeafNode("ordered_list", "Item 2"),
+            LeafNode("ordered_list", "Item 3")
+        ])
+        result = markdown_to_html_node(markdown)
+        self.assertEqual(expected, result)
 
 if __name__ == "__main__":
     unittest.main()

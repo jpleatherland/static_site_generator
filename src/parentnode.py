@@ -1,8 +1,8 @@
 from htmlnode import HTMLNode
 
 class ParentNode(HTMLNode):
-    def __init__(self, children, tag=None, props=None):
-        super().__init__(tag=tag, children=children, props=props)
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag=tag, value=None, children=children, props=props)
 
     def to_html(self):
         if(not self.tag):
