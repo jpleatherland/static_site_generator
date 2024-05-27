@@ -2,7 +2,8 @@ import unittest
 from inline_markdown import (
     split_nodes_delimiter,
     split_nodes_image,
-    split_nodes_link
+    split_nodes_link,
+    text_to_textnodes
 )
 
 from textnode import (
@@ -185,6 +186,37 @@ class TestInlineMarkdown(unittest.TestCase):
         result = split_nodes_link([node])
         self.assertListEqual(expected, result)
 
+    def test_text_to_textnodes_no_delimiters(self):
+        text = "This is plain text without any delimiters"
+        expected = [
+            TextNode("This is plain text without any delimiters", text_type_text)
+        ]
+        result = text_to_textnodes(text)
+        self.assertListEqual(expected, result)
+
+    def test_text_to_textnodes_multiple_delimiters(self):
+        text = "This is text with **multiple** *delimiters* and `code`"
+        expected = [
+            TextNode("This is text with ", text_type_text),
+            TextNode("multiple", text_type_bold),
+            TextNode(" ", text_type_text),
+            TextNode("delimiters", text_type_italic),
+            TextNode(" and ", text_type_text),
+            TextNode("code", text_type_code)
+        ]
+        result = text_to_textnodes(text)
+        self.assertListEqual(expected, result)
+
+    def test_text_to_textnodes_with_images_and_links(self):
+        text = "This is text with an ![image](https://example.com/image.png) and a [link](https://example.com)"
+        expected = [
+            TextNode("This is text with an ", text_type_text),
+            TextNode("image", text_type_image, "https://example.com/image.png"),
+            TextNode(" and a ", text_type_text),
+            TextNode("link", text_type_link, "https://example.com")
+        ]
+        result = text_to_textnodes(text)
+        self.assertListEqual(expected, result)
 
 if __name__ == "__main__":
     unittest.main()

@@ -23,6 +23,6 @@ class TestExtractMethods(unittest.TestCase):
         expected = []
         result = extract_markdown_links(text)
         self.assertListEqual(expected, result)
-        
+
 if __name__ == "__main__":
     unittest.main()
