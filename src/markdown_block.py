@@ -54,6 +54,7 @@ def block_to_block_type(block):
 
 
 def heading_to_html_node(block_type, block_content):
+    block_content.strip()
     text_nodes = text_to_textnodes(block_content)
     children = []
     for text_node in text_nodes:
@@ -62,6 +63,7 @@ def heading_to_html_node(block_type, block_content):
 
 
 def code_to_html_node(block_content):
+    block_content = block_content.strip()
     text_nodes = text_to_textnodes(block_content)
     children = []
     for text_node in text_nodes:
@@ -71,6 +73,7 @@ def code_to_html_node(block_content):
 
 
 def paragraph_to_html_node(block_content):
+    block_content.strip()
     block_content = block_content.replace("\n", " ")
     text_nodes = text_to_textnodes(block_content)
     children = []
@@ -80,6 +83,7 @@ def paragraph_to_html_node(block_content):
 
 
 def quote_to_html_node(block_content):
+    block_content.strip()
     lines = block_content.split("\n")
     new_lines = []
     for line in lines:
@@ -93,6 +97,7 @@ def quote_to_html_node(block_content):
 
 
 def ol_to_html_node(block_content):
+    block_content.strip()
     lines = block_content.split("\n")
     children = []
     for line in lines:
@@ -106,6 +111,7 @@ def ol_to_html_node(block_content):
 
 
 def ul_to_html_node(block_content):
+    block_content.strip()
     lines = block_content.split("\n")
     children = []
     for line in lines:
@@ -124,35 +130,40 @@ def markdown_to_html_node(markdown):
     for block in blocks:
         block_type = block_to_block_type(block)
         block_content = block
+        block_content = block_content.lstrip("\n")
+        block_content = block_content.rstrip("\n")
         if block_type == block_types['block_type_h1']:
             block_content = block_content[2:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_h2']:
             block_content = block_content[3:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_h3']:
             block_content = block_content[4:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_h4']:
             block_content = block_content[5:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_h5']:
             block_content = block_content[6:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_h6']:
             block_content = block_content[7:]
-            children.append(heading_to_html_node(block_type, block_content))
+            node = heading_to_html_node(block_type, block_content)
         elif block_type == block_types['block_type_code']:
             block_content = block_content[3:-3]
-            children.append(code_to_html_node(block_content))
+            node = code_to_html_node(block_content)
         elif block_type == block_types['block_type_quote']:
             block_content = block_content[2:]
-            children.append(quote_to_html_node(block_content))
+            node = quote_to_html_node(block_content)
         elif block_type == block_types['block_type_ul']:
-            children.append(ul_to_html_node(block_content))
+            node = ul_to_html_node(block_content)
         elif block_type == block_types['block_type_ol']:
-            children.append(ol_to_html_node(block_content))
+            node = ol_to_html_node(block_content)
         elif block_type == block_types['block_type_paragraph']:
-            children.append(paragraph_to_html_node(block_content))
+            node = paragraph_to_html_node(block_content)
+        children.append(node.to_html())
 
-    return ParentNode("div", children=children)
+    return ''.join(children)
+
+#    return ParentNode("div", children=children)
