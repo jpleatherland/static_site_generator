@@ -74,7 +74,8 @@ class TestInlineMarkdown(unittest.TestCase):
         )
 
     def test_delim_code(self):
-        node = TextNode("This is text with a `code block` word", text_type_text)
+        node = TextNode(
+            "This is text with a `code block` word", text_type_text)
         new_nodes = split_nodes_delimiter([node], "`", text_type_code)
         self.assertListEqual(
             [
@@ -92,13 +93,15 @@ class TestInlineMarkdown(unittest.TestCase):
         )
         expected = [
             TextNode("This is text with an ", text_type_text),
-            TextNode("image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+            TextNode("image", text_type_image,
+                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
             TextNode(" and another ", text_type_text),
-            TextNode("second image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png")
+            TextNode("second image", text_type_image,
+                     "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png")
         ]
         result = split_nodes_image([node])
         self.assertListEqual(expected, result)
-    
+
     def test_split_nodes_image_multiple(self):
         node = TextNode(
             "This is text with multiple images: ![image1](https://example.com/image1.png) and ![image2](https://example.com/image2.png)",
@@ -106,9 +109,11 @@ class TestInlineMarkdown(unittest.TestCase):
         )
         expected = [
             TextNode("This is text with multiple images: ", text_type_text),
-            TextNode("image1", text_type_image, "https://example.com/image1.png"),
+            TextNode("image1", text_type_image,
+                     "https://example.com/image1.png"),
             TextNode(" and ", text_type_text),
-            TextNode("image2", text_type_image, "https://example.com/image2.png")
+            TextNode("image2", text_type_image,
+                     "https://example.com/image2.png")
         ]
         result = split_nodes_image([node])
         self.assertListEqual(expected, result)
@@ -135,7 +140,6 @@ class TestInlineMarkdown(unittest.TestCase):
         result = split_nodes_image([node])
         self.assertListEqual(expected, result)
 
-    
     def test_split_nodes_link(self):
         node = TextNode(
             "This is text with a [link](https://example.com) and another [second link](https://example2.com)",
@@ -211,12 +215,14 @@ class TestInlineMarkdown(unittest.TestCase):
         text = "This is text with an ![image](https://example.com/image.png) and a [link](https://example.com)"
         expected = [
             TextNode("This is text with an ", text_type_text),
-            TextNode("image", text_type_image, "https://example.com/image.png"),
+            TextNode("image", text_type_image,
+                     "https://example.com/image.png"),
             TextNode(" and a ", text_type_text),
             TextNode("link", text_type_link, "https://example.com")
         ]
         result = text_to_textnodes(text)
         self.assertListEqual(expected, result)
+
 
 if __name__ == "__main__":
     unittest.main()
